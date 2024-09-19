@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import homeStore.bannerRed
 import homeStore.searchBar
-import homeStore.sideMenuButton
+import homeStore.topMenuButton
 import homeStore.verticalListProgramsItems
 import theme.blackBackground
 
@@ -56,7 +56,7 @@ fun app() {
               LazyRow(modifier = Modifier.padding(start = 20.dp)) {
                 item {
                   for (i in buttonMenuItems.indices) {
-                    sideMenuButton(buttonMenuItems = buttonMenuItems[i])
+                    topMenuButton(text = buttonMenuItems[i])
                     Spacer(Modifier.width(5.dp))
                   }
                 }
@@ -82,6 +82,9 @@ fun app() {
                 for (i in programsMock.indices) {
                   item {
                     verticalListProgramsItems(programsMock = programsMock[i], iconProgramMock = iconProgramMock[i])
+                  for (i in programsMock.indices) {
+                    item {
+                      verticalListProgramsItems(programsMock = programsMock[i], iconProgramMock = iconProgramMock[i])
                   }
                 }
               }
