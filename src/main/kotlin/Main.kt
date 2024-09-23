@@ -77,7 +77,7 @@ fun app() {
               if (showSearchTextField) searchBar(textSearch) { newText -> textSearch = newText }
             }
 
-          bannerRed()
+            Banner().home()
 
           Spacer(Modifier.height(10.dp))
 
