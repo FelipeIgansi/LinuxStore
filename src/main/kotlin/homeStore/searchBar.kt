@@ -2,13 +2,14 @@ package homeStore
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -17,7 +18,7 @@ import theme.primaryColor
 
 @Composable
 fun searchBar(text: String, onValueChange: (String) -> Unit) {
-  TextField(
+  OutlinedTextField(
     value = text,
     onValueChange = { onValueChange(it) },
     placeholder = { Text("Busque um programa", color = Color.White) },
@@ -31,6 +32,17 @@ fun searchBar(text: String, onValueChange: (String) -> Unit) {
     ),
     textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
     singleLine = true,
-    modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp)
+    modifier = Modifier.fillMaxWidth()
+      .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
+      .width(500.dp),
+    trailingIcon = {
+      IconButton(onClick = {}) {
+        Icon(
+          painterResource(resourcePath = "icons/search.png"),
+          contentDescription = null,
+          modifier = Modifier.size(20.dp)
+        )
+      }
+    }
   )
 }
