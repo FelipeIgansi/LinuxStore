@@ -1,23 +1,31 @@
 package homeStore
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
-import theme.orange
+import theme.primaryColor
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun topMenuButton(text: String) {
+  var isHover by remember { mutableStateOf(false) }
   OutlinedButton(
     onClick = {},
     colors = ButtonDefaults.outlinedButtonColors(
-      backgroundColor = Color.Transparent,
+      backgroundColor = if (isHover) primaryColor else Color.Transparent,
       contentColor = Color.White
     ),
-    border = BorderStroke(width = 2.dp, color = orange)
+    shape = RoundedCornerShape(10.dp),
+    modifier = Modifier.onPointerEvent(PointerEventType.Enter) { isHover = true }
+                       .onPointerEvent(PointerEventType.Exit) { isHover = false }
   ) {
     Text(text)
   }
