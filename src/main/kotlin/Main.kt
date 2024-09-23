@@ -99,11 +99,16 @@ fun app() {
 
 fun main() = application {
   Window(
-    onCloseRequest = ::exitApplication, title = "UbuntuStore", alwaysOnTop = true, state = WindowState(
-      width = 700.dp, height = 600.dp, placement = WindowPlacement.Maximized, position = WindowPosition(
-        Alignment.Center
-      )
-    )
+    onCloseRequest = ::exitApplication,
+    title = "UbuntuStore",
+    alwaysOnTop = false,
+    state =
+    WindowState(
+      width = 700.dp,
+      height = 600.dp,
+      placement = WindowPlacement.Maximized,
+      position = WindowPosition(Alignment.Center)
+    ),
   ) {
     app()
   }
