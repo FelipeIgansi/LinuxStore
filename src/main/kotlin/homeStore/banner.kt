@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import theme.darkOrange
-import theme.orange
+import androidx.compose.ui.unit.sp
+import theme.primaryColor
 
 @Composable
 fun bannerRed() {
@@ -57,3 +57,4 @@ fun bannerRed() {
     }
   }
 }
+        .background(primaryColor),

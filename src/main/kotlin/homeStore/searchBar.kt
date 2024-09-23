@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import theme.darkOrange
-import theme.orange
+import theme.lightPurple
+import theme.primaryColor
 
 @Composable
 fun searchBar(text: String, onValueChange: (String) -> Unit) {
@@ -23,11 +23,11 @@ fun searchBar(text: String, onValueChange: (String) -> Unit) {
     placeholder = { Text("Busque um programa", color = Color.White) },
     shape = RoundedCornerShape(10.dp),
     colors = TextFieldDefaults.outlinedTextFieldColors(
-      unfocusedBorderColor = darkOrange,
-      focusedBorderColor = orange,
+      unfocusedBorderColor = primaryColor,
+      focusedBorderColor = lightPurple,
       focusedLabelColor = Color.Blue,
-      trailingIconColor = orange,
-      textColor = orange
+      trailingIconColor = lightPurple,
+      textColor = lightPurple
     ),
     textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
     singleLine = true,
