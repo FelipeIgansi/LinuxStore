@@ -1,4 +1,4 @@
-package homeStore
+package activities.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,49 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import theme.primaryColor
+import activities.theme.primaryColor
 
-@Composable
-fun bannerRed() {
-  val gradientColors = listOf(
-    darkOrange,
-    orange
-  )
-
-  Row(
-    modifier = Modifier
-      .fillMaxWidth()
-      .height(200.dp)
-      .padding(start = 20.dp, end = 20.dp)
-      .clip(shape = RoundedCornerShape(10.dp))
-      .background(brush = Brush.horizontalGradient(colors = gradientColors)),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.SpaceAround
-  ) {
-    Column {
-      Text("All Snap categories", fontWeight = FontWeight.Bold, color = Color.White)
-      Text("Our featured apps", color = Color.White)
-    }
-    Row {
-      Image(
-        painter = painterResource(resourcePath = "icons/slack.png"),
-        contentDescription = null,
-        modifier = Modifier.size(50.dp)
-      )
-      Image(
-        painter = painterResource(resourcePath = "icons/spotify.png"),
-        contentDescription = null,
-        modifier = Modifier.size(50.dp)
-      )
-      Image(
-        painter = painterResource(resourcePath = "icons/vscode.png"),
-        contentDescription = null,
-        modifier = Modifier.size(50.dp)
-      )
-    }
-  }
-}
-        .background(primaryColor),
 class Banner {
   @Composable
   fun home() {
@@ -85,4 +44,33 @@ class Banner {
     }
   }
 
+  @Composable
+  fun programs() {
+    Box(
+      modifier = Modifier
+        .height(200.dp)
+        .padding(start = 15.dp, end = 15.dp)
+        .clip(shape = RoundedCornerShape(10.dp))
+        .background(primaryColor),
+    ) {
+      Row(
+        modifier = Modifier.fillMaxSize(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+      ) {
+        Box(modifier = Modifier.border(2.dp, Color.LightGray, shape = RoundedCornerShape(10.dp)).padding(10.dp).background(Color.Transparent)) {
+          Image(
+            painter = painterResource(resourcePath = "icons/gimp.png"),
+            contentDescription = null,
+            modifier = Modifier.size(60.dp)
+          )
+        }
+        Spacer(Modifier.width(10.dp))
+        Column {
+          Text("Gimp", fontWeight = FontWeight.Bold, color = Color.White, fontSize = 23.sp)
+          Text("Art & Design. photo and video", color = Color.LightGray)
+        }
+      }
+    }
+  }
 }

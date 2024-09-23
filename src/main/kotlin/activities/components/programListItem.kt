@@ -1,4 +1,4 @@
-package homeStore
+package activities.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -7,6 +7,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
@@ -20,8 +21,8 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import theme.backgroundListItems
-import theme.lightPurple
+import activities.theme.backgroundListItems
+import activities.theme.lightPurple
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -59,13 +60,13 @@ fun verticalListProgramsItems(programsMock: String, iconProgramMock: String) {
           for (i in 0..4) Icon(Icons.Default.Star, contentDescription = null, tint = Color.Yellow)
         }
       }
-      /*IconButton(onClick = {}) {
+      IconButton(onClick = {}) {
         Icon(
           painter = painterResource("icons/download.png"), contentDescription = null,
           tint = Color.Gray,
           modifier = Modifier.size(55.dp).padding(end = 20.dp)
         )
-      }*/
+      }
     }
   }
 }

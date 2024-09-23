@@ -1,4 +1,4 @@
-package homeStore
+package activities.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,8 +13,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import theme.lightPurple
-import theme.primaryColor
+import activities.theme.lightPurple
+import activities.theme.primaryColor
 
 @Composable
 fun searchBar(text: String, onValueChange: (String) -> Unit) {

@@ -1,4 +1,4 @@
-package theme
+package activities.theme
 
 import androidx.compose.ui.graphics.Color
 

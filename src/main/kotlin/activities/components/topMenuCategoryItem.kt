@@ -1,4 +1,4 @@
-package homeStore
+package activities.components
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -11,11 +11,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
-import theme.primaryColor
+import activities.theme.primaryColor
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun topMenuButton(text: String) {
+fun topMenuCategoryItem(text: String) {
   var isHover by remember { mutableStateOf(false) }
   OutlinedButton(
     onClick = {},

@@ -1,3 +1,6 @@
+package activities
+
+import activities.components.*
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -15,8 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
-import homeStore.*
-import theme.blackBackground
+import activities.theme.blackBackground
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -52,7 +54,7 @@ fun app() {
                 LazyRow(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp)) {
                   buttonMenuItems.forEach { button ->
                     item {
-                      topMenuButton(text = button)
+                      topMenuCategoryItem(text = button)
                       Spacer(Modifier.width(5.dp))
                     }
                   }
