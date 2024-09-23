@@ -23,42 +23,15 @@ import theme.blackBackground
 @Preview
 fun app() {
 
-  val buttonMenuItems = listOf("Explore", "Productivity", "Development", "Games", "Art & Design", "Settings", "Updates")
-
+  val buttonMenuItems = listOf("Explore", "Productivity", "Development", "Games", "Art & Design")
   val programsMock = listOf("postman", "Spotify", "Gimp", "Inkscape", "VSCode", "Slack")
-  val iconProgramMock = listOf("postman.png", "spotify.png", "gimp.png", "Inkscape.png", "vscode.png", "slack.png")
-
+  val iconProgramMock = listOf("postman.png", "spotify.svg", "gimp.png", "Inkscape.png", "vscode.png", "slack.png")
   var textSearch by remember { mutableStateOf("") }
 
   var showCategoriesOptions by remember { mutableStateOf(true) }
   var showSearchTextField by remember { mutableStateOf(false) }
 
   MaterialTheme {
-    Box(Modifier.fillMaxSize().background(blackBackground)) {
-      Column {
-        Column {
-          Row(
-            modifier = Modifier.fillMaxWidth().padding(10.dp),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            IconButton(
-              onClick = { showLateralMenu = !showLateralMenu },
-              modifier = Modifier.padding(start = 20.dp, top = 10.dp)
-            ) {
-              Icon(Icons.Default.Menu, contentDescription = null, tint = Color.White)
-            }
-            if (showLateralMenu) {
-              LazyRow(modifier = Modifier.padding(start = 20.dp)) {
-                item {
-                  for (i in buttonMenuItems.indices) {
-                    topMenuButton(text = buttonMenuItems[i])
-                    Spacer(Modifier.width(5.dp))
-                  }
-                }
-              }
-            } else searchBar(textSearch) { newText -> textSearch = newText }
-          }
     Surface(color = blackBackground) {
       Box(Modifier.fillMaxSize()) {
         Row {
@@ -69,7 +42,18 @@ fun app() {
             onShowSearchTextFieldChanged = { newValue -> showSearchTextField = newValue }
           )
 
+          Column {
+            Row(
+              modifier = Modifier.fillMaxWidth().padding(5.dp),
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically
+            ) {
               if (showCategoriesOptions) {
+                LazyRow(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp)) {
+                  buttonMenuItems.forEach { button ->
+                    item {
+                      topMenuButton(text = button)
+                      Spacer(Modifier.width(5.dp))
                     }
                   }
                 }
@@ -79,37 +63,24 @@ fun app() {
 
             Banner().home()
 
-          Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(10.dp))
 
-          Text(
-            "Explore os mais baixados!",
-            color = Color.White,
-            modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp),
-            textAlign = TextAlign.Center,
-            fontWeight = FontWeight.Bold
-          )
-          Box(modifier = Modifier.padding(10.dp)) {
-            LazyVerticalGrid(
-              columns = GridCells.Fixed(2),
-              content = {
-                for (i in programsMock.indices) {
-                  item {
-                    verticalListProgramsItems(programsMock = programsMock[i], iconProgramMock = iconProgramMock[i])
-                  for (i in programsMock.indices) {
-                    item {
-                      verticalListProgramsItems(programsMock = programsMock[i], iconProgramMock = iconProgramMock[i])
-                  }
-                }
-              }
+            Text(
+              "Explore os mais baixados!",
+              color = Color.White,
+              modifier = Modifier.fillMaxWidth().padding(top = 5.dp, bottom = 10.dp),
+              textAlign = TextAlign.Center,
+              fontWeight = FontWeight.Bold
             )
+            Box(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
               LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 content = {
-                    for (i in programsMock.indices) {
-                      item {
-                        verticalListProgramsItems(programsMock = programsMock[i], iconProgramMock = iconProgramMock[i])
-                      }
+                  for (i in programsMock.indices) {
+                    item {
+                      verticalListProgramsItems(programsMock = programsMock[i], iconProgramMock = iconProgramMock[i])
                     }
+                  }
                 }
               )
             }
