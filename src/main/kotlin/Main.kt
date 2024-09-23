@@ -89,6 +89,17 @@ fun app() {
                 }
               }
             )
+              LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                content = {
+                    for (i in programsMock.indices) {
+                      item {
+                        verticalListProgramsItems(programsMock = programsMock[i], iconProgramMock = iconProgramMock[i])
+                      }
+                    }
+                }
+              )
+            }
           }
         }
       }
