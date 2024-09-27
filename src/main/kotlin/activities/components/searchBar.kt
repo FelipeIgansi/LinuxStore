@@ -1,9 +1,9 @@
 package activities.components
 
+import activities.theme.lightPurple
+import activities.theme.primaryColor
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -13,8 +13,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import activities.theme.lightPurple
-import activities.theme.primaryColor
 
 @Composable
 fun searchBar(text: String, onValueChange: (String) -> Unit) {
@@ -32,9 +30,7 @@ fun searchBar(text: String, onValueChange: (String) -> Unit) {
     ),
     textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
     singleLine = true,
-    modifier = Modifier.fillMaxWidth()
-      .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
-      .width(500.dp),
+    modifier = Modifier.fillMaxWidth(),
     trailingIcon = {
       IconButton(onClick = {}) {
         Icon(
