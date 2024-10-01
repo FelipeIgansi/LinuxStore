@@ -1,5 +1,7 @@
 package activities.components
 
+import activities.theme.lightPurple
+import activities.theme.primaryColor
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,11 +15,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import activities.theme.lightPurple
-import activities.theme.primaryColor
 
 @Composable
-fun searchBar(text: String, onValueChange: (String) -> Unit) {
+fun searchBar(text: String, onValueChange: (String) -> Unit, onButtonClicked: () -> Unit) {
   OutlinedTextField(
     value = text,
     onValueChange = { onValueChange(it) },
@@ -36,7 +36,7 @@ fun searchBar(text: String, onValueChange: (String) -> Unit) {
       .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
       .width(500.dp),
     trailingIcon = {
-      IconButton(onClick = {}) {
+      IconButton(onClick = { onButtonClicked() }) {
         Icon(
           painterResource(resourcePath = "icons/search.png"),
           contentDescription = null,
