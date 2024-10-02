@@ -1,5 +1,6 @@
 package activities.components
 
+import activities.theme.primaryColor
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -10,7 +11,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import activities.theme.primaryColor
 
 @ExperimentalMaterialApi
 @Composable

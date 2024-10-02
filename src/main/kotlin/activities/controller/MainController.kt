@@ -1,4 +1,4 @@
-package activities.viewmodel
+package activities.controller
 
 import activities.AptPackageModel
 import kotlinx.coroutines.flow.MutableStateFlow

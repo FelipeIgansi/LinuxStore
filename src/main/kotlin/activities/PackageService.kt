@@ -20,7 +20,7 @@ object PackageService {
       if (line.isNotEmpty()) {
         val mapContentLine = line.split(':', limit = 2).toList()
         when (mapContentLine.first()) {
-          Constants.PACKAGE_NAME -> currentPackage = currentPackage.copy(packageName = mapContentLine[1].trim())
+          Constants.PACKAGE_MODEL -> currentPackage = currentPackage.copy(packageName = mapContentLine[1].trim())
           Constants.VERSION_MODEL -> currentPackage = currentPackage.copy(version = mapContentLine[1].trim())
           Constants.PRIORITY_MODEL -> currentPackage = currentPackage.copy(priority = mapContentLine[1].trim())
           Constants.SECTION_MODEL -> currentPackage = currentPackage.copy(section = mapContentLine[1].trim())

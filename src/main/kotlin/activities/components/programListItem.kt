@@ -25,8 +25,10 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun verticalListProgramsItems(programsMock: String, iconProgramMock: String) {
 fun verticalListProgramsItems(
+  aptPackageModel: AptPackageModel,
+//  onDownloadClicked: ()->Unit
+) {
   var isHover by remember { mutableStateOf(false) }
   Row(
     modifier = Modifier.width(200.dp)
@@ -53,9 +55,10 @@ fun verticalListProgramsItems(
       verticalAlignment = Alignment.CenterVertically
     ) {
       Column(modifier = Modifier.weight(1f)) {
-        Text("${Constants.PACKAGE_NAME}: ${aptPackageModel.packageName}", color = Color.White)
+        Text("${Constants.PACKAGE_MODEL}: ${aptPackageModel.packageName}", color = Color.White)
         Text("${Constants.VERSION_MODEL}: ${aptPackageModel.version}", color = Color.White)
         Text("${Constants.MAINTAINER_MODEL}: ${aptPackageModel.maintainer}", color = Color.White)
+        Text("${Constants.SECTION_MODEL}: ${aptPackageModel.section}", color = Color.White)
         Text("${Constants.DESCRIPTION_MODEL}: ${aptPackageModel.description}", color = Color.White, maxLines = 1)
 
       }

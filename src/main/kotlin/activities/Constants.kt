@@ -1,6 +1,6 @@
 sealed class Constants {
     companion object{
-         const val PACKAGE_NAME = "Package"
+         const val PACKAGE_MODEL = "Package"
          const val VERSION_MODEL = "Version"
          const val PRIORITY_MODEL = "Priority"
          const val SECTION_MODEL = "Section"
@@ -11,8 +11,6 @@ sealed class Constants {
          const val DOWNLOAD_SIZE_MODEL = "Download-Size"
          const val APT_SOURCES_MODEL = "APT-Sources"
          const val DESCRIPTION_MODEL = "Description"
-         const val SORTING = "sorting"
-         const val FULL_TEXT = "full text"
          const val APT = "apt"
          const val SEARCH = "search"
          const val SECTION = "section"
