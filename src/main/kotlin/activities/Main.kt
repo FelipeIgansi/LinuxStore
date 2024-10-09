@@ -1,15 +1,17 @@
 package activities
 
 import activities.components.*
-import activities.theme.blackBackground
-import activities.theme.primaryColor
 import activities.controller.MainController
+import activities.theme.blackBackground
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,19 +30,40 @@ fun app(
 ) {
 
 //  val buttonMenuItems = listOf("Explore", "Productivity", "Development", "Games", "Art & Design")
-  val buttonMenuItems = listOf("web")
+  val buttonMenuItems = listOf("games")
 
   val packageService = PackageService
 
   var textSearch by remember { mutableStateOf("") }
-  val page by remember { mutableIntStateOf(1) }
-  val size by remember { mutableIntStateOf(10) }
 
   val packageList by mainController.packageList.collectAsState()
-  val packageSize by aptCommandExecutor.packageSize.collectAsState()
+  val packageListTemp = mutableMapOf<AptPackageModel, String>()
 
-  LaunchedEffect(page) {
-    mainController.setPackageList(packageService.listPackagesBySection(aptCommandExecutor, buttonMenuItems.first(), page, size))
+  val popularApps = listOf(
+    "gimp",
+    "chromium-browser",
+    "vlc",
+    "libreoffice",
+    "filezilla",
+    "inkscape",
+    "transmission-gtk",
+    "audacity",
+    "thunderbird",
+    "shotwell",
+    "blender",
+    "krita",
+    "steam",
+    "obs-studio"
+  )
+  LaunchedEffect(Unit) {
+    popularApps.forEach { packageName ->
+      val key = packageService.getPackageDetails(aptCommandExecutor, packageName)
+      packageListTemp[key] = "icons/$packageName.svg"
+    }
+  }
+
+  LaunchedEffect(Unit) {
+    if (packageListTemp.keys.size > 0) mainController.setPackageList(packageListTemp)
   }
 
   var showCategoriesOptions by remember { mutableStateOf(true) }
@@ -64,7 +87,10 @@ fun app(
               verticalAlignment = Alignment.CenterVertically
             ) {
               if (showCategoriesOptions) {
-                LazyRow(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(start = 10.dp)) {
+                LazyRow(
+                  verticalAlignment = Alignment.CenterVertically,
+                  modifier = Modifier.padding(start = 10.dp)
+                ) {
                   buttonMenuItems.forEach { button ->
                     item {
                       topMenuCategoryItem(text = button)
@@ -75,14 +101,12 @@ fun app(
               }
               if (showSearchTextField) searchBar(textSearch, { newText -> textSearch = newText },
                 {
-                  mainController.setPackageList(
+                  /*mainController.setPackageList(
                     packageService.listPackagesBySection(
                       aptCommandExecutor,
-                      textSearch,
-                      page,
-                      size
+                      textSearch
                     )
-                  )
+                  )*/
                 }
               )
             }
@@ -99,26 +123,15 @@ fun app(
               fontWeight = FontWeight.Bold
             )
 
-/*            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-              LazyRow(modifier = Modifier.clip(CircleShape)) {
-                for (i in 1..<(packageSize / size) / 2) {// esse dividido por 2 ai é só para diminuir o numero de paginas
-                  item {
-                    buttonPages(i, page){
-                      page = i
-                    }
-                  }
-                }
-              }
-            }*/
-
             Box(modifier = Modifier.padding(start = 10.dp, end = 10.dp)) {
               LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
               ) {
-                packageList.forEach {
+                packageList.forEach { (key, value) ->
                   item {
                     verticalListProgramsItems(
-                      aptPackageModel = it,
+                      aptPackageModel = key,
+                      iconPath = value
                       /*onDownloadClicked = {
                         //TODO()
                       }*/
@@ -133,21 +146,6 @@ fun app(
     }
   }
 }
-
-@Composable
-private fun buttonPages(buttonText: Int, currPage: Int, onButtonClicked: () -> Unit) {
-  Button(
-    onClick = { onButtonClicked() },
-    colors = ButtonDefaults.buttonColors(
-      backgroundColor = if (currPage == buttonText) primaryColor else Color.Transparent,
-      contentColor = Color.White
-    )
-  ) {
-    Text((buttonText).toString())
-  }
-
-}
-
 
 fun main() = application {
   Window(

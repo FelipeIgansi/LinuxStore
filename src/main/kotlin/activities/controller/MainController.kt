@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class MainController{
-    private var _packageList  = MutableStateFlow(listOf<AptPackageModel>())
-    val packageList: StateFlow<List<AptPackageModel>> = _packageList
+    private var _packageList  = MutableStateFlow(mapOf<AptPackageModel, String>())
+    val packageList: StateFlow<Map<AptPackageModel, String>> = _packageList
 
-    fun setPackageList(value: List<AptPackageModel>){
+    fun setPackageList(value: Map<AptPackageModel, String>){
         _packageList.value = value
     }
 }
