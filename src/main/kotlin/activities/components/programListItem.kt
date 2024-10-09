@@ -1,17 +1,20 @@
 package activities.components
 
-import Constants
 import activities.AptPackageModel
 import activities.theme.backgroundListItems
 import activities.theme.lightPurple
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -22,11 +25,13 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import java.util.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun verticalListProgramsItems(
   aptPackageModel: AptPackageModel,
+  iconPath: String
 //  onDownloadClicked: ()->Unit
 ) {
   var isHover by remember { mutableStateOf(false) }
@@ -43,11 +48,11 @@ fun verticalListProgramsItems(
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.Start
   ) {
-    /*Image(
-      painter = painterResource(resourcePath = "icons/$iconProgramMock"),
+    Image(
+      painter = painterResource(resourcePath = iconPath),
       contentDescription = null,
       modifier = Modifier.size(50.dp)
-    )*/
+    )
     Spacer(Modifier.width(10.dp))
     Row(
       modifier = Modifier.fillMaxWidth(),
@@ -55,20 +60,33 @@ fun verticalListProgramsItems(
       verticalAlignment = Alignment.CenterVertically
     ) {
       Column(modifier = Modifier.weight(1f)) {
-        Text("${Constants.PACKAGE_MODEL}: ${aptPackageModel.packageName}", color = Color.White)
-        Text("${Constants.VERSION_MODEL}: ${aptPackageModel.version}", color = Color.White)
-        Text("${Constants.MAINTAINER_MODEL}: ${aptPackageModel.maintainer}", color = Color.White)
-        Text("${Constants.SECTION_MODEL}: ${aptPackageModel.section}", color = Color.White)
-        Text("${Constants.DESCRIPTION_MODEL}: ${aptPackageModel.description}", color = Color.White, maxLines = 1)
-
+        Text(
+          aptPackageModel.packageName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+          color = Color.White
+        )
+        Column(modifier = Modifier.padding(start = 5.dp, end = 5.dp)) {
+          Text(aptPackageModel.description, color = Color.Gray, maxLines = 1)
+          Row {
+            repeat(5) {
+              Icon(Icons.Default.Star, contentDescription = null, tint = Color.LightGray)
+            }
+          }
+        }
       }
-      IconButton(onClick = {/*onDownloadClicked()*/ }) {
+      OutlinedButton(
+        onClick = { },
+        shape = RoundedCornerShape(10.dp),
+        border = BorderStroke(width = 3.dp, color = Color.Gray),
+        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+        modifier = Modifier.size(50.dp)
+      ) {
         Icon(
           painter = painterResource("icons/download.png"), contentDescription = null,
           tint = Color.Gray,
-          modifier = Modifier.size(55.dp).padding(end = 20.dp)
+          modifier = Modifier.size(30.dp)
         )
       }
+      Spacer(Modifier.width(20.dp))
     }
   }
 }
