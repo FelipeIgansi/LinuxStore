@@ -60,7 +60,7 @@ class Banner {
       ) {
         Box(modifier = Modifier.border(2.dp, Color.LightGray, shape = RoundedCornerShape(10.dp)).padding(10.dp).background(Color.Transparent)) {
           Image(
-            painter = painterResource(resourcePath = "icons/gimp.png"),
+            painter = painterResource(resourcePath = ""),
             contentDescription = null,
             modifier = Modifier.size(60.dp)
           )

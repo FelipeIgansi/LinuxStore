@@ -1,16 +1,11 @@
 package activities
 
 import Constants
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class AptCommandExecutor {
-  private var _packageSize = MutableStateFlow(0)
-  val packageSize: StateFlow<Int> = _packageSize
-
-  fun executeSearchPackages(section: String, page: Int, size: Int): List<String> {
+  fun executeSearchPackages(section: String): List<String> {
 //    val processBuilder = ProcessBuilder(Constants.APT, Constants.SEARCH, "?section($section)")
     val processBuilder = ProcessBuilder(
       "/bin/sh",
@@ -33,9 +28,7 @@ class AptCommandExecutor {
     }
 
     process.waitFor()
-    _packageSize.value = output.size
-    val subList = output.subList((page * size) - size, page * size)
-    return subList
+    return output
   }
 
   fun executeShowPackage(packageName: String): List<String> {
@@ -55,8 +48,8 @@ class AptCommandExecutor {
   }
 
 
-  fun searchPackagesBySection(section: String, page: Int, size: Int): List<String> {
-    val aptOutput = executeSearchPackages(section, page, size)
+  fun searchPackagesBySection(section: String): List<String> {
+    val aptOutput = executeSearchPackages(section)
     return aptOutput
   }
 }
