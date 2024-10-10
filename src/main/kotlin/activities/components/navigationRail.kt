@@ -1,6 +1,6 @@
 package activities.components
 
-import activities.theme.primaryColor
+import activities.theme.blackBackground
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -30,7 +30,7 @@ fun navigationRail(
     painterResource(resourcePath = "icons/about.png"),
   )
   NavigationRail(
-    backgroundColor = primaryColor,
+    backgroundColor = blackBackground,
     modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, start = 5.dp).clip(RoundedCornerShape(10.dp))
   ) {
     Column(
@@ -71,7 +71,6 @@ fun navigationRail(
               Icon(
                 icons[index],
                 contentDescription = item,
-                tint = Color.White,
                 modifier = Modifier.size(20.dp)
               )
             },
@@ -79,7 +78,7 @@ fun navigationRail(
             selected = selected == index,
             onClick = { selected = index },
             selectedContentColor = Color.White,
-            unselectedContentColor = Color.Gray,
+            unselectedContentColor = Color.LightGray,
             alwaysShowLabel = selected == index
           )
         }

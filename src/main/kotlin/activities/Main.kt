@@ -28,9 +28,17 @@ fun app(
   mainController: MainController,
   aptCommandExecutor: AptCommandExecutor
 ) {
+  val menuItem = Constants.MenuItems.EN
 
-//  val buttonMenuItems = listOf("Explore", "Productivity", "Development", "Games", "Art & Design")
-  val buttonMenuItems = listOf("games")
+  val buttonMenuItems = listOf(
+    menuItem.OFFICE,
+    menuItem.PRODUCTIVITY,
+    menuItem.DEVELOPMENT,
+    menuItem.GAMES,
+    menuItem.GRAPHICS,
+    menuItem.MULTIMEDIA,
+    menuItem.INTERNET
+  ).sorted()
 
   val packageService = PackageService
 

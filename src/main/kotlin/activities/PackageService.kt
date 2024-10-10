@@ -1,11 +1,10 @@
 package activities
 
-import Constants
 import java.util.*
 
 object PackageService {
   /*    fun listAllPackages(): List<String> {
-          val aptOutput = AptCommandExecutor.executeAptCommand(Constants.APT, Constants.LIST, "--all-versions")
+          val aptOutput = AptCommandExecutor.executeAptCommand(activities.Constants.APT, activities.Constants.LIST, "--all-versions")
           return aptOutput.map { it.substringBefore('/') }
       }*/
 
