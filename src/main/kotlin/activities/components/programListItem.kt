@@ -3,6 +3,7 @@ package activities.components
 import activities.AptPackageModel
 import activities.theme.backgroundListItems
 import activities.theme.lightPurple
+import activities.theme.primaryColor
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,12 +36,17 @@ fun verticalListProgramsItems(
 //  onDownloadClicked: ()->Unit
 ) {
   var isHover by remember { mutableStateOf(false) }
+  var isHoverButton by remember { mutableStateOf(false) }
+  val shapeCorner = 10.dp
   Row(
     modifier = Modifier.width(200.dp)
       .padding(5.dp)
       .height(150.dp)
-      .border(BorderStroke(width = 1.dp, color = if (isHover) lightPurple else Color.Transparent))
-      .clip(RoundedCornerShape(10.dp))
+      .border(
+        BorderStroke(width = 3.dp, color = if (isHover) lightPurple else Color.Transparent),
+        shape = RoundedCornerShape(shapeCorner)
+      )
+      .clip(RoundedCornerShape(shapeCorner))
       .background(backgroundListItems)
       .padding(start = 20.dp)
       .onPointerEvent(PointerEventType.Enter) { isHover = true }
@@ -53,7 +59,7 @@ fun verticalListProgramsItems(
       contentDescription = null,
       modifier = Modifier.size(50.dp)
     )
-    Spacer(Modifier.width(10.dp))
+    Spacer(Modifier.width(shapeCorner))
     Row(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween,
@@ -75,14 +81,16 @@ fun verticalListProgramsItems(
       }
       OutlinedButton(
         onClick = { },
-        shape = RoundedCornerShape(10.dp),
-        border = BorderStroke(width = 3.dp, color = Color.Gray),
+        shape = RoundedCornerShape(shapeCorner),
+        border = BorderStroke(width = 3.dp, color = if (isHoverButton) primaryColor else Color.Gray),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
         modifier = Modifier.size(50.dp)
+          .onPointerEvent(PointerEventType.Enter) { isHoverButton = true }
+          .onPointerEvent(PointerEventType.Exit) { isHoverButton = false },
       ) {
         Icon(
           painter = painterResource("icons/download.png"), contentDescription = null,
-          tint = Color.Gray,
+          tint = if (isHoverButton) primaryColor else Color.Gray,
           modifier = Modifier.size(30.dp)
         )
       }
