@@ -4,4 +4,7 @@
 
 Sinta-se a vontade para explorar os arquivos e contribuir. Estou aceitando ideias de como ir melhorando ela. ;)
 
-![Screenshot]([src/main/resources/screenshots/preview_inicial.png))
+
+*Preview inicial de como está ficando*
+
+![Screenshot](src/main/resources/screenshots/preview_inicial.png)
