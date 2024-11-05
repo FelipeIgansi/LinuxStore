@@ -34,13 +34,19 @@ import java.util.*
 fun verticalListProgramsItems(
   aptPackageModel: AptPackageModel,
   iconPath: String
-//  onDownloadClicked: ()->Unit
 ) {
   var isHover by remember { mutableStateOf(false) }
   var isHoverButton by remember { mutableStateOf(false) }
   val shapeCorner = 10.dp
 
   var selectedPackage by remember { mutableStateOf(AptPackageModel()) }
+  val aptCommandExecutor = AptCommandExecutor()
+
+  var installationIcon by remember { mutableStateOf(
+    if(!aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName))"icons/download.png"
+    else "icons/check.png"
+  ) }
+
 
 
   Row(
@@ -86,11 +92,13 @@ fun verticalListProgramsItems(
       }
       OutlinedButton(
         onClick = {
-          // TODO (Quando for clicado aqui será feita chamada para a instalação do pacote seleciono)
           selectedPackage = aptPackageModel
+          if(!aptCommandExecutor.isPackageInstalled(selectedPackage.packageName)){
+            aptCommandExecutor.installPackage(selectedPackage.packageName)
+          }else{
+            installationIcon = "icons/check.png"
+          }
 
-          AptCommandExecutor().installPackage(selectedPackage.packageName)
-          // Está sendo selecionado corretamente e ao fazer a seleção deve enviar o pacote para a função de instação de pacotes
 
         },
         shape = RoundedCornerShape(shapeCorner),
@@ -101,7 +109,7 @@ fun verticalListProgramsItems(
           .onPointerEvent(PointerEventType.Exit) { isHoverButton = false },
       ) {
         Icon(
-          painter = painterResource("icons/download.png"), contentDescription = null,
+          painter = painterResource(installationIcon), contentDescription = null,
           tint = if (isHoverButton) primaryColor else Color.Gray,
           modifier = Modifier.size(30.dp)
         )

@@ -50,21 +50,45 @@ class AptCommandExecutor {
 
 
   fun installPackage(packageName: String): Boolean {
-    val processBuilder = ProcessBuilder("pkexec", "apt", "install", packageName, "-y")
+    return try {
+      val processBuilder = ProcessBuilder("pkexec", "apt", "install", packageName, "-y")
 
-    processBuilder.redirectErrorStream(true)
+      processBuilder.redirectErrorStream(true)
 
-    val process = processBuilder.start()
+      val process = processBuilder.start()
 
-    val reader = BufferedReader(InputStreamReader(process.inputStream))
-    var line: String?
+      val reader = BufferedReader(InputStreamReader(process.inputStream))
+      var line: String?
 
-    while (reader.readLine().also { line = it } != null) {
-      println(line)
+      while (reader.readLine().also { line = it } != null) {
+        println(line)
+      }
+
+      val exitCOde = process.waitFor()
+      return exitCOde == 0
+    } catch (e: Exception) {
+      e.printStackTrace()
+      false
     }
 
-    val exitCOde = process.waitFor()
-    return exitCOde == 0
+  }
+
+  fun isPackageInstalled(packageName: String): Boolean {
+    return try {
+      val processBuilder = ProcessBuilder("dpkg", "-l", packageName)
+      processBuilder.redirectErrorStream(true)
+      val process = processBuilder.start()
+
+      val reader = BufferedReader(InputStreamReader(process.inputStream))
+      val output = reader.readLines()
+
+      output.any { it.startsWith("ii") && it.contains(packageName) }
+
+
+    } catch (e: Exception) {
+      e.printStackTrace()
+      false
+    }
   }
 
 }
