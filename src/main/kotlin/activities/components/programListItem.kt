@@ -42,13 +42,13 @@ fun verticalListProgramsItems(
   var selectedPackage by remember { mutableStateOf(AptPackageModel()) }
   val aptCommandExecutor = AptCommandExecutor()
 
-  var buttonIsEnable = aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName)
+  var buttonIsEnable by remember { mutableStateOf(false) }
+  var installationIcon by remember { mutableStateOf("") }
 
-  var installationIcon by remember { mutableStateOf(
-    if(!buttonIsEnable)"icons/download.png"
-    else "icons/check.png"
-  ) }
 
+  buttonIsEnable = aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName)
+
+  installationIcon = if (!buttonIsEnable) "download.png" else "check.png"
 
 
   Row(
@@ -95,9 +95,9 @@ fun verticalListProgramsItems(
       OutlinedButton(
         onClick = {
           selectedPackage = aptPackageModel
-          if(!aptCommandExecutor.isPackageInstalled(selectedPackage.packageName)){
+          if (!aptCommandExecutor.isPackageInstalled(selectedPackage.packageName)) {
             aptCommandExecutor.installPackage(selectedPackage.packageName)
-          }else{
+          } else {
             installationIcon = "icons/check.png"
             buttonIsEnable = false
           }
@@ -117,7 +117,7 @@ fun verticalListProgramsItems(
         enabled = !buttonIsEnable
       ) {
         Icon(
-          painter = painterResource(installationIcon), contentDescription = null,
+          painter = painterResource("icons/$installationIcon"), contentDescription = null,
           tint = if (isHoverButton && !buttonIsEnable) primaryColor else Color.White,
           modifier = Modifier.size(30.dp)
         )
