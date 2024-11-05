@@ -48,7 +48,6 @@ class AptCommandExecutor {
     return aptOutput
   }
 
-
   fun installPackage(packageName: String): Boolean {
     return try {
       val processBuilder = ProcessBuilder("pkexec", "apt", "install", packageName, "-y")
@@ -82,8 +81,9 @@ class AptCommandExecutor {
       val reader = BufferedReader(InputStreamReader(process.inputStream))
       val output = reader.readLines()
 
+      // Se a saída contiver o nome do pacote e o status estiver marcado como "ii",
+      // significa que o pacote está instalado.
       output.any { it.startsWith("ii") && it.contains(packageName) }
-
 
     } catch (e: Exception) {
       e.printStackTrace()

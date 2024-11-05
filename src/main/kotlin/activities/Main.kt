@@ -158,7 +158,7 @@ fun app(
 fun main() = application {
   Window(
     onCloseRequest = ::exitApplication,
-    title = "UbuntuStore",
+    title = "Store",
     alwaysOnTop = false,
     state =
     WindowState(

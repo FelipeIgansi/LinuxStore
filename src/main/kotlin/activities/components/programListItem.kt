@@ -42,8 +42,10 @@ fun verticalListProgramsItems(
   var selectedPackage by remember { mutableStateOf(AptPackageModel()) }
   val aptCommandExecutor = AptCommandExecutor()
 
+  var buttonIsEnable = aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName)
+
   var installationIcon by remember { mutableStateOf(
-    if(!aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName))"icons/download.png"
+    if(!buttonIsEnable)"icons/download.png"
     else "icons/check.png"
   ) }
 
@@ -97,20 +99,26 @@ fun verticalListProgramsItems(
             aptCommandExecutor.installPackage(selectedPackage.packageName)
           }else{
             installationIcon = "icons/check.png"
+            buttonIsEnable = false
           }
 
 
         },
         shape = RoundedCornerShape(shapeCorner),
-        border = BorderStroke(width = 3.dp, color = if (isHoverButton) primaryColor else Color.Gray),
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
+        border = BorderStroke(width = 3.dp, color = if (isHoverButton && !buttonIsEnable) primaryColor else Color.Gray),
+        colors = ButtonDefaults.buttonColors(
+          backgroundColor = Color.Transparent,
+          disabledBackgroundColor = Color.Transparent,
+          disabledContentColor = Color.White
+        ),
         modifier = Modifier.size(50.dp)
           .onPointerEvent(PointerEventType.Enter) { isHoverButton = true }
           .onPointerEvent(PointerEventType.Exit) { isHoverButton = false },
+        enabled = !buttonIsEnable
       ) {
         Icon(
           painter = painterResource(installationIcon), contentDescription = null,
-          tint = if (isHoverButton) primaryColor else Color.Gray,
+          tint = if (isHoverButton && !buttonIsEnable) primaryColor else Color.White,
           modifier = Modifier.size(30.dp)
         )
       }
