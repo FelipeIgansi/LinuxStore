@@ -5,14 +5,11 @@ import java.io.InputStreamReader
 
 class AptCommandExecutor {
   fun executeSearchPackages(section: String): List<String> {
-//    val processBuilder = ProcessBuilder(Constants.APT, Constants.SEARCH, "?section($section)")
     val processBuilder = ProcessBuilder(
       "/bin/sh",
       "-c",
       "apt-cache show $(apt-cache search . | cut -d' ' -f1) | grep -A 10 '^Section: $section'"
     )
-    /* TODO(Existe uma inconsistencia aqui, onde o comando exibe corretamente os pacotes com section web,
-        mas ao consultar os detalhes do pacote ele não é de fato dessa section)*/
 
     val process = processBuilder.start()
     val output = mutableListOf<String>()
@@ -46,9 +43,28 @@ class AptCommandExecutor {
     return output
   }
 
-
   fun searchPackagesBySection(section: String): List<String> {
     val aptOutput = executeSearchPackages(section)
     return aptOutput
   }
+
+
+  fun installPackage(packageName: String): Boolean {
+    val processBuilder = ProcessBuilder("pkexec", "apt", "install", packageName, "-y")
+
+    processBuilder.redirectErrorStream(true)
+
+    val process = processBuilder.start()
+
+    val reader = BufferedReader(InputStreamReader(process.inputStream))
+    var line: String?
+
+    while (reader.readLine().also { line = it } != null) {
+      println(line)
+    }
+
+    val exitCOde = process.waitFor()
+    return exitCOde == 0
+  }
+
 }

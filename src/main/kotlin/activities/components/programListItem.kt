@@ -1,5 +1,6 @@
 package activities.components
 
+import activities.AptCommandExecutor
 import activities.AptPackageModel
 import activities.theme.backgroundListItems
 import activities.theme.lightPurple
@@ -38,6 +39,10 @@ fun verticalListProgramsItems(
   var isHover by remember { mutableStateOf(false) }
   var isHoverButton by remember { mutableStateOf(false) }
   val shapeCorner = 10.dp
+
+  var selectedPackage by remember { mutableStateOf(AptPackageModel()) }
+
+
   Row(
     modifier = Modifier.width(200.dp)
       .padding(5.dp)
@@ -80,7 +85,14 @@ fun verticalListProgramsItems(
         }
       }
       OutlinedButton(
-        onClick = { },
+        onClick = {
+          // TODO (Quando for clicado aqui será feita chamada para a instalação do pacote seleciono)
+          selectedPackage = aptPackageModel
+
+          AptCommandExecutor().installPackage(selectedPackage.packageName)
+          // Está sendo selecionado corretamente e ao fazer a seleção deve enviar o pacote para a função de instação de pacotes
+
+        },
         shape = RoundedCornerShape(shapeCorner),
         border = BorderStroke(width = 3.dp, color = if (isHoverButton) primaryColor else Color.Gray),
         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent),
