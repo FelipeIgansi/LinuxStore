@@ -60,9 +60,10 @@ fun app(
     "shotwell",
     "blender",
     "krita",
-    "steam",
+    "steam-installer",
     "obs-studio"
   )
+
   LaunchedEffect(Unit) {
     popularApps.forEach { packageName ->
       val key = packageService.getPackageDetails(aptCommandExecutor, packageName)
@@ -139,10 +140,7 @@ fun app(
                   item {
                     verticalListProgramsItems(
                       aptPackageModel = key,
-                      iconPath = value
-                      /*onDownloadClicked = {
-                        //TODO()
-                      }*/
+                      iconPath = value,
                     )
                   }
                 }

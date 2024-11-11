@@ -1,9 +1,12 @@
 package activities
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class AptCommandExecutor {
+
   fun executeSearchPackages(section: String): List<String> {
     val processBuilder = ProcessBuilder(
       "/bin/sh",
@@ -48,23 +51,24 @@ class AptCommandExecutor {
     return aptOutput
   }
 
-  fun installPackage(packageName: String): Boolean {
+  suspend fun installPackage(packageName: String): Boolean {
     return try {
-      val processBuilder = ProcessBuilder("pkexec", "apt", "install", packageName, "-y")
+      withContext(Dispatchers.IO){
+        val processBuilder = ProcessBuilder("pkexec", "apt", "install", packageName, "-y")
 
-      processBuilder.redirectErrorStream(true)
+        processBuilder.redirectErrorStream(true)
 
-      val process = processBuilder.start()
+        val process = processBuilder.start()
 
-      val reader = BufferedReader(InputStreamReader(process.inputStream))
-      var line: String?
+        val reader = BufferedReader(InputStreamReader(process.inputStream))
+        var line: String?
 
-      while (reader.readLine().also { line = it } != null) {
-        println(line)
+        while (reader.readLine().also { line = it } != null) {
+          println(line)
+        }
+        val exitCode = process.waitFor()
+        return@withContext exitCode == 0
       }
-
-      val exitCOde = process.waitFor()
-      return exitCOde == 0
     } catch (e: Exception) {
       e.printStackTrace()
       false

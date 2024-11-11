@@ -1,3 +1,5 @@
+@file:OptIn(DelicateCoroutinesApi::class)
+
 package activities.components
 
 import activities.AptCommandExecutor
@@ -11,10 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.*
@@ -27,13 +26,16 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.util.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun verticalListProgramsItems(
   aptPackageModel: AptPackageModel,
-  iconPath: String
+  iconPath: String,
 ) {
   var isHover by remember { mutableStateOf(false) }
   var isHoverButton by remember { mutableStateOf(false) }
@@ -41,10 +43,10 @@ fun verticalListProgramsItems(
 
   var selectedPackage by remember { mutableStateOf(AptPackageModel()) }
   val aptCommandExecutor = AptCommandExecutor()
+  var showProgressBar by remember { mutableStateOf(false) }
 
   var buttonIsEnable by remember { mutableStateOf(false) }
   var installationIcon by remember { mutableStateOf("") }
-
 
   buttonIsEnable = aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName)
 
@@ -92,35 +94,46 @@ fun verticalListProgramsItems(
           }
         }
       }
-      OutlinedButton(
-        onClick = {
-          selectedPackage = aptPackageModel
-          if (!aptCommandExecutor.isPackageInstalled(selectedPackage.packageName)) {
-            aptCommandExecutor.installPackage(selectedPackage.packageName)
-          } else {
-            installationIcon = "icons/check.png"
-            buttonIsEnable = false
-          }
-
-
-        },
-        shape = RoundedCornerShape(shapeCorner),
-        border = BorderStroke(width = 3.dp, color = if (isHoverButton && !buttonIsEnable) primaryColor else Color.Gray),
-        colors = ButtonDefaults.buttonColors(
+      if (showProgressBar) {
+        CircularProgressIndicator(
+          modifier = Modifier.size(50.dp),
+          color = primaryColor,
           backgroundColor = Color.Transparent,
-          disabledBackgroundColor = Color.Transparent,
-          disabledContentColor = Color.White
-        ),
-        modifier = Modifier.size(50.dp)
-          .onPointerEvent(PointerEventType.Enter) { isHoverButton = true }
-          .onPointerEvent(PointerEventType.Exit) { isHoverButton = false },
-        enabled = !buttonIsEnable
-      ) {
-        Icon(
-          painter = painterResource("icons/$installationIcon"), contentDescription = null,
-          tint = if (isHoverButton && !buttonIsEnable) primaryColor else Color.White,
-          modifier = Modifier.size(30.dp)
         )
+      }else{
+        OutlinedButton(
+          onClick = {
+            selectedPackage = aptPackageModel
+            if (!aptCommandExecutor.isPackageInstalled(selectedPackage.packageName)) {
+              showProgressBar = true
+              GlobalScope.launch {
+                aptCommandExecutor.installPackage(selectedPackage.packageName)
+                showProgressBar = false
+              }
+            } else {
+              installationIcon = "icons/check.png"
+              buttonIsEnable = false
+            }
+//          showProgressBar = false
+          },
+          shape = RoundedCornerShape(shapeCorner),
+          border = BorderStroke(width = 3.dp, color = if (isHoverButton && !buttonIsEnable) primaryColor else Color.Gray),
+          colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.Transparent,
+            disabledBackgroundColor = Color.Transparent,
+            disabledContentColor = Color.White
+          ),
+          modifier = Modifier.size(50.dp)
+            .onPointerEvent(PointerEventType.Enter) { isHoverButton = true }
+            .onPointerEvent(PointerEventType.Exit) { isHoverButton = false },
+          enabled = !buttonIsEnable
+        ) {
+          Icon(
+            painter = painterResource("icons/$installationIcon"), contentDescription = null,
+            tint = if (isHoverButton && !buttonIsEnable) primaryColor else Color.White,
+            modifier = Modifier.size(30.dp)
+          )
+        }
       }
       Spacer(Modifier.width(20.dp))
     }
