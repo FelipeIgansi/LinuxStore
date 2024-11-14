@@ -2,7 +2,7 @@ package activities
 
 import activities.components.*
 import activities.controller.MainController
-import activities.controller.ProgramListItemController
+import activities.controller.PackageInstallationController
 import activities.theme.blackBackground
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
@@ -139,10 +139,10 @@ fun app(
               ) {
                 packageList.forEach { (key, value) ->
                   item {
-                    verticalListProgramsItems(
-                      aptPackageModel = key,
-                      iconPath = value,
-                      controller = ProgramListItemController()
+                    packageItemView(
+                      packageData = key,
+                      packageIconPath = value,
+                      packageController = PackageInstallationController()
                     )
                   }
                 }

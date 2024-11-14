@@ -1,7 +1,7 @@
 package activities.components
 
 import activities.AptPackageModel
-import activities.controller.ProgramListItemController
+import activities.controller.PackageInstallationController
 import activities.theme.backgroundListItems
 import activities.theme.lightPurple
 import activities.theme.primaryColor
@@ -28,24 +28,26 @@ import java.util.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun verticalListProgramsItems(
-  aptPackageModel: AptPackageModel,
-  iconPath: String,
-  controller: ProgramListItemController
+fun packageItemView(
+  packageData: AptPackageModel,
+  packageIconPath: String,
+  packageController: PackageInstallationController
 ) {
-  var isHover by remember { mutableStateOf(false) }
-  var isHoverButton by remember { mutableStateOf(false) }
-  val shapeCorner = 10.dp
+  var isItemHovered by remember { mutableStateOf(false) }
+  var isButtonHovered by remember { mutableStateOf(false) }
 
-  val showProgressBar by controller.showProgressBar.collectAsState()
-  val buttonIsEnable by controller.buttonIsEnable.collectAsState()
-  val installationIcon by controller.installationIcon.collectAsState()
-  val buttonBorderColor = if (isHoverButton && !buttonIsEnable) primaryColor else Color.Gray
-  val itemBorder = if (isHover) lightPurple else Color.Transparent
+  val isProgressBarVisible by packageController.isProgressBarVisible.collectAsState()
+  val isInstallButtonEnabled by packageController.isInstallButtonEnabled.collectAsState()
+  val installButtonIcon by packageController.installButtonIcon.collectAsState()
+
+  val buttonBorderColor = if (isButtonHovered && !isInstallButtonEnabled) primaryColor else Color.Gray
+  val itemBorder = if (isItemHovered) lightPurple else Color.Transparent
+  val cornerRadius = 10.dp
+
 
 
   LaunchedEffect(Unit) {
-    controller.updateButtonState(aptPackageModel)
+    packageController.updateButtonState(packageData)
   }
 
   Row(
@@ -54,22 +56,22 @@ fun verticalListProgramsItems(
       .height(150.dp)
       .border(
         BorderStroke(width = 3.dp, color = itemBorder),
-        shape = RoundedCornerShape(shapeCorner)
+        shape = RoundedCornerShape(cornerRadius)
       )
-      .clip(RoundedCornerShape(shapeCorner))
+      .clip(RoundedCornerShape(cornerRadius))
       .background(backgroundListItems)
       .padding(start = 20.dp)
-      .onPointerEvent(PointerEventType.Enter) { isHover = true }
-      .onPointerEvent(PointerEventType.Exit) { isHover = false },
+      .onPointerEvent(PointerEventType.Enter) { isItemHovered = true }
+      .onPointerEvent(PointerEventType.Exit) { isItemHovered = false },
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.Start
   ) {
     Image(
-      painter = painterResource(resourcePath = iconPath),
+      painter = painterResource(resourcePath = packageIconPath),
       contentDescription = null,
       modifier = Modifier.size(50.dp)
     )
-    Spacer(Modifier.width(shapeCorner))
+    Spacer(Modifier.width(cornerRadius))
     Row(
       modifier = Modifier.fillMaxWidth(),
       horizontalArrangement = Arrangement.SpaceBetween,
@@ -77,11 +79,11 @@ fun verticalListProgramsItems(
     ) {
       Column(modifier = Modifier.weight(1f)) {
         Text(
-          aptPackageModel.packageName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+          packageData.packageName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
           color = Color.White
         )
         Column(modifier = Modifier.padding(start = 5.dp, end = 5.dp)) {
-          Text(aptPackageModel.description, color = Color.Gray, maxLines = 1)
+          Text(packageData.description, color = Color.Gray, maxLines = 1)
           Row {
             repeat(5) {
               Icon(Icons.Default.Star, contentDescription = null, tint = Color.LightGray)
@@ -89,7 +91,7 @@ fun verticalListProgramsItems(
           }
         }
       }
-      if (showProgressBar) {
+      if (isProgressBarVisible) {
         CircularProgressIndicator(
           modifier = Modifier.size(50.dp),
           color = primaryColor,
@@ -98,10 +100,10 @@ fun verticalListProgramsItems(
       } else {
         OutlinedButton(
           onClick = {
-            controller.setSelectedPackage(aptPackageModel)
-            controller.installPackage()
+            packageController.updateCurrentPackageState(packageData)
+            packageController.executeInstallation()
           },
-          shape = RoundedCornerShape(shapeCorner),
+          shape = RoundedCornerShape(cornerRadius),
           border = BorderStroke(
             width = 3.dp,
             color = buttonBorderColor
@@ -112,12 +114,12 @@ fun verticalListProgramsItems(
             disabledContentColor = Color.White
           ),
           modifier = Modifier.size(50.dp)
-            .onPointerEvent(PointerEventType.Enter) { isHoverButton = true }
-            .onPointerEvent(PointerEventType.Exit) { isHoverButton = false },
-          enabled = !buttonIsEnable
+            .onPointerEvent(PointerEventType.Enter) { isButtonHovered = true }
+            .onPointerEvent(PointerEventType.Exit) { isButtonHovered = false },
+          enabled = !isInstallButtonEnabled
         ) {
           Icon(
-            painter = painterResource("icons/$installationIcon"), contentDescription = null,
+            painter = painterResource("icons/$installButtonIcon"), contentDescription = null,
             tint = buttonBorderColor,
             modifier = Modifier.size(30.dp)
           )
