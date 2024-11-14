@@ -2,6 +2,7 @@ package activities
 
 import activities.components.*
 import activities.controller.MainController
+import activities.controller.ProgramListItemController
 import activities.theme.blackBackground
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
@@ -141,6 +142,8 @@ fun app(
                     verticalListProgramsItems(
                       aptPackageModel = key,
                       iconPath = value,
+                      aptCommandExecutor = aptCommandExecutor,
+                      controller = ProgramListItemController()
                     )
                   }
                 }

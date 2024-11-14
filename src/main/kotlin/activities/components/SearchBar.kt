@@ -2,10 +2,7 @@ package activities.components
 
 import activities.theme.lightPurple
 import activities.theme.primaryColor
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -33,13 +30,13 @@ fun searchBar(text: String, onValueChange: (String) -> Unit, onButtonClicked: ()
     textStyle = TextStyle(color = Color.White, fontSize = 18.sp),
     singleLine = true,
     modifier = Modifier.fillMaxWidth()
-      .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp)
-      .width(500.dp),
+      .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp),
     trailingIcon = {
       IconButton(onClick = { onButtonClicked() }) {
         Icon(
           painterResource(resourcePath = "icons/search.png"),
           contentDescription = null,
+          tint = primaryColor,
           modifier = Modifier.size(20.dp)
         )
       }

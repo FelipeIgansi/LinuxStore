@@ -1,9 +1,8 @@
-@file:OptIn(DelicateCoroutinesApi::class)
-
 package activities.components
 
 import activities.AptCommandExecutor
 import activities.AptPackageModel
+import activities.controller.ProgramListItemController
 import activities.theme.backgroundListItems
 import activities.theme.lightPurple
 import activities.theme.primaryColor
@@ -26,9 +25,6 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.util.*
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -36,21 +32,20 @@ import java.util.*
 fun verticalListProgramsItems(
   aptPackageModel: AptPackageModel,
   iconPath: String,
+  aptCommandExecutor : AptCommandExecutor,
+  controller : ProgramListItemController
 ) {
   var isHover by remember { mutableStateOf(false) }
   var isHoverButton by remember { mutableStateOf(false) }
   val shapeCorner = 10.dp
 
-  var selectedPackage by remember { mutableStateOf(AptPackageModel()) }
-  val aptCommandExecutor = AptCommandExecutor()
-  var showProgressBar by remember { mutableStateOf(false) }
+  val showProgressBar by controller.showProgressBar.collectAsState()
+  val buttonIsEnable by controller.buttonIsEnable.collectAsState()
+  val installationIcon by controller.installationIcon.collectAsState("download.png")
 
-  var buttonIsEnable by remember { mutableStateOf(false) }
-  var installationIcon by remember { mutableStateOf("") }
+  controller.setButtonIsEnable(aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName))
 
-  buttonIsEnable = aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName)
-
-  installationIcon = if (!buttonIsEnable) "download.png" else "check.png"
+  controller.setInstallationIcon(if (!buttonIsEnable) "download.png" else "check.png")
 
 
   Row(
@@ -100,24 +95,17 @@ fun verticalListProgramsItems(
           color = primaryColor,
           backgroundColor = Color.Transparent,
         )
-      }else{
+      } else {
         OutlinedButton(
           onClick = {
-            selectedPackage = aptPackageModel
-            if (!aptCommandExecutor.isPackageInstalled(selectedPackage.packageName)) {
-              showProgressBar = true
-              GlobalScope.launch {
-                aptCommandExecutor.installPackage(selectedPackage.packageName)
-                showProgressBar = false
-              }
-            } else {
-              installationIcon = "icons/check.png"
-              buttonIsEnable = false
-            }
-//          showProgressBar = false
+            controller.setSelectedPackage(aptPackageModel)
+            controller.installPackage()
           },
           shape = RoundedCornerShape(shapeCorner),
-          border = BorderStroke(width = 3.dp, color = if (isHoverButton && !buttonIsEnable) primaryColor else Color.Gray),
+          border = BorderStroke(
+            width = 3.dp,
+            color = if (isHoverButton && !buttonIsEnable) primaryColor else Color.Gray
+          ),
           colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Transparent,
             disabledBackgroundColor = Color.Transparent,
