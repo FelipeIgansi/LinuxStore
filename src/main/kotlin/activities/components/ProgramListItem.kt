@@ -1,6 +1,5 @@
 package activities.components
 
-import activities.AptCommandExecutor
 import activities.AptPackageModel
 import activities.controller.ProgramListItemController
 import activities.theme.backgroundListItems
@@ -32,8 +31,7 @@ import java.util.*
 fun verticalListProgramsItems(
   aptPackageModel: AptPackageModel,
   iconPath: String,
-  aptCommandExecutor : AptCommandExecutor,
-  controller : ProgramListItemController
+  controller: ProgramListItemController
 ) {
   var isHover by remember { mutableStateOf(false) }
   var isHoverButton by remember { mutableStateOf(false) }
@@ -41,19 +39,21 @@ fun verticalListProgramsItems(
 
   val showProgressBar by controller.showProgressBar.collectAsState()
   val buttonIsEnable by controller.buttonIsEnable.collectAsState()
-  val installationIcon by controller.installationIcon.collectAsState("download.png")
+  val installationIcon by controller.installationIcon.collectAsState()
+  val buttonBorderColor = if (isHoverButton && !buttonIsEnable) primaryColor else Color.Gray
+  val itemBorder = if (isHover) lightPurple else Color.Transparent
 
-  controller.setButtonIsEnable(aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName))
 
-  controller.setInstallationIcon(if (!buttonIsEnable) "download.png" else "check.png")
-
+  LaunchedEffect(Unit) {
+    controller.updateButtonState(aptPackageModel)
+  }
 
   Row(
     modifier = Modifier.width(200.dp)
       .padding(5.dp)
       .height(150.dp)
       .border(
-        BorderStroke(width = 3.dp, color = if (isHover) lightPurple else Color.Transparent),
+        BorderStroke(width = 3.dp, color = itemBorder),
         shape = RoundedCornerShape(shapeCorner)
       )
       .clip(RoundedCornerShape(shapeCorner))
@@ -104,7 +104,7 @@ fun verticalListProgramsItems(
           shape = RoundedCornerShape(shapeCorner),
           border = BorderStroke(
             width = 3.dp,
-            color = if (isHoverButton && !buttonIsEnable) primaryColor else Color.Gray
+            color = buttonBorderColor
           ),
           colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Transparent,
@@ -118,7 +118,7 @@ fun verticalListProgramsItems(
         ) {
           Icon(
             painter = painterResource("icons/$installationIcon"), contentDescription = null,
-            tint = if (isHoverButton && !buttonIsEnable) primaryColor else Color.White,
+            tint = buttonBorderColor,
             modifier = Modifier.size(30.dp)
           )
         }

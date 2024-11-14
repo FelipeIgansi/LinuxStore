@@ -18,7 +18,7 @@ class ProgramListItemController {
   private var _buttonIsEnable = MutableStateFlow(false)
   val buttonIsEnable: StateFlow<Boolean> = _buttonIsEnable
 
-  private var _installationIcon = MutableStateFlow("")
+  private var _installationIcon = MutableStateFlow("download.png")
   val installationIcon: StateFlow<String> = _installationIcon
 
   private val aptCommandExecutor = AptCommandExecutor()
@@ -39,11 +39,17 @@ class ProgramListItemController {
     }
   }
 
-  private fun updateState(isInstalled: Boolean) {
-    _buttonIsEnable.value = isInstalled
-    _installationIcon.value = if (isInstalled) "check.png" else "download.png"
+  fun updateButtonState(aptPackageModel: AptPackageModel) {
+    _buttonIsEnable.value = aptCommandExecutor.isPackageInstalled(aptPackageModel.packageName)
+    _installationIcon.value = chooseTheIcon(_buttonIsEnable.value)
   }
 
+  private fun updateState(isInstalled: Boolean) {
+    _buttonIsEnable.value = isInstalled
+    _installationIcon.value = chooseTheIcon(isInstalled)
+  }
+
+  private fun chooseTheIcon(condition:Boolean) = if (condition)"check.png" else "download.png"
 
   fun setSelectedPackage(value: AptPackageModel) {
     _selectedPackage.value = value
@@ -51,13 +57,5 @@ class ProgramListItemController {
 
   private fun setShowProgressBar(value: Boolean) {
     _showProgressBar.value = value
-  }
-
-  fun setButtonIsEnable(value: Boolean) {
-    _buttonIsEnable.value = value
-  }
-
-  fun setInstallationIcon(value: String) {
-    _installationIcon.value = value
   }
 }

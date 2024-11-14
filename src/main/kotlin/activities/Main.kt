@@ -142,7 +142,6 @@ fun app(
                     verticalListProgramsItems(
                       aptPackageModel = key,
                       iconPath = value,
-                      aptCommandExecutor = aptCommandExecutor,
                       controller = ProgramListItemController()
                     )
                   }
