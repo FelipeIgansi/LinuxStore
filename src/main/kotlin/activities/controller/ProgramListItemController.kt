@@ -21,21 +21,29 @@ class ProgramListItemController {
   private var _installationIcon = MutableStateFlow("")
   val installationIcon: StateFlow<String> = _installationIcon
 
-  private var _aptCommandExecutor = MutableStateFlow(AptCommandExecutor())
+  private val aptCommandExecutor = AptCommandExecutor()
+
+  private val ioScope = CoroutineScope(Dispatchers.IO)
 
 
-  fun installPackage(){
-    if (!_aptCommandExecutor.value.isPackageInstalled(_selectedPackage.value.packageName)) {
+  fun installPackage() {
+    if (!aptCommandExecutor.isPackageInstalled(_selectedPackage.value.packageName)) {
       setShowProgressBar(true)
-      CoroutineScope(Dispatchers.IO).launch {
-        _aptCommandExecutor.value.installPackage(_selectedPackage.value.packageName)
+      ioScope.launch {
+        aptCommandExecutor.installPackage(_selectedPackage.value.packageName)
         setShowProgressBar(false)
+        updateState(isInstalled = true)
       }
     } else {
-      setInstallationIcon("icons/check.png")
-      setButtonIsEnable(false)
+      updateState(isInstalled = false)
     }
   }
+
+  private fun updateState(isInstalled: Boolean) {
+    _buttonIsEnable.value = isInstalled
+    _installationIcon.value = if (isInstalled) "check.png" else "download.png"
+  }
+
 
   fun setSelectedPackage(value: AptPackageModel) {
     _selectedPackage.value = value
