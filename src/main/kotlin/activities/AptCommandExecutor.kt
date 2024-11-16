@@ -51,9 +51,12 @@ class AptCommandExecutor {
     return aptOutput
   }
 
-  suspend fun installPackage(packageName: String): Boolean {
+  suspend fun installPackage(
+    packageName: String,
+    percentInstalled: (Int) -> Unit
+  ): Boolean {
     return try {
-      withContext(Dispatchers.IO){
+      withContext(Dispatchers.IO) {
         val processBuilder = ProcessBuilder("pkexec", "apt", "install", packageName, "-y")
 
         processBuilder.redirectErrorStream(true)
@@ -65,8 +68,16 @@ class AptCommandExecutor {
 
         while (reader.readLine().also { line = it } != null) {
           println(line)
+          val percentageMatch = line?.let { Regex("""(\d+)%""").find(it) }
+          if (percentageMatch != null) {
+            withContext(Dispatchers.IO) {
+              val progressValue = percentageMatch.groupValues[1].toInt()
+              percentInstalled(progressValue) // Chama o callback com o valor do progresso
+            }
+          }
         }
         val exitCode = process.waitFor()
+        percentInstalled(100) // Define em 100% ao final da instalação
         return@withContext exitCode == 0
       }
     } catch (e: Exception) {

@@ -25,12 +25,17 @@ class PackageInstallationController {
 
   private val ioScope = CoroutineScope(Dispatchers.IO)
 
+  private var _percentInstalled = MutableStateFlow(0)
+  val percentInstalled: StateFlow<Int> = _percentInstalled
+
 
   fun executeInstallation() {
     if (!commandExecutor.isPackageInstalled(currentPackageState.value.packageName)) {
       updateProgressBarVisiblility(true)
       ioScope.launch {
         commandExecutor.installPackage(currentPackageState.value.packageName)
+        { newValue -> _percentInstalled.value = newValue }
+
         updateProgressBarVisiblility(false)
         updateState(isInstalled = true)
       }
@@ -49,7 +54,7 @@ class PackageInstallationController {
     _installButtonIcon.value = chooseTheIcon(isInstalled)
   }
 
-  private fun chooseTheIcon(condition:Boolean) = if (condition)"check.png" else "download.png"
+  private fun chooseTheIcon(condition: Boolean) = if (condition) "check.png" else "download.png"
 
   fun updateCurrentPackageState(value: AptPackageModel) {
     currentPackageState.value = value
