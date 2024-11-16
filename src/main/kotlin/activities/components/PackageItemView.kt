@@ -40,6 +40,7 @@ fun packageItemView(
   val isProgressBarVisible by packageController.isProgressBarVisible.collectAsState()
   val isInstallButtonEnabled by packageController.isInstallButtonEnabled.collectAsState()
   val installButtonIcon by packageController.installButtonIcon.collectAsState()
+  val percent by packageController.percent.collectAsState()
 
   val buttonBorderColor = if (isButtonHovered && !isInstallButtonEnabled) primaryColor else Color.Gray
   val itemBorder = if (isItemHovered) lightPurple else Color.Transparent
@@ -94,9 +95,10 @@ fun packageItemView(
       }
       if (isProgressBarVisible) {
         CircularProgressIndicator(
+          progress = percent.toFloat() / 100,
           modifier = Modifier.size(50.dp),
           color = primaryColor,
-          backgroundColor = Color.Transparent,
+          backgroundColor = Color.Gray,
         )
       } else {
         OutlinedButton(

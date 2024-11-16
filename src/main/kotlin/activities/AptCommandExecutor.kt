@@ -1,6 +1,7 @@
 package activities
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -51,11 +52,14 @@ class AptCommandExecutor {
     return aptOutput
   }
 
-  suspend fun installPackage(packageName: String): Boolean {
+  suspend fun installPackage(
+    packageName: String,
+    callBack: (Int) -> Unit
+  ): Boolean {
     return try {
-      withContext(Dispatchers.IO){
+      withContext(Dispatchers.IO) {
         val processBuilder = ProcessBuilder("pkexec", "apt", "install", packageName, "-y")
-
+        var stopProcess = false
         processBuilder.redirectErrorStream(true)
 
         val process = processBuilder.start()
@@ -64,16 +68,28 @@ class AptCommandExecutor {
         var line: String?
 
         while (reader.readLine().also { line = it } != null) {
-          println(line)
+          val percentageMatch = line?.let { Regex("""(\d+)%""").find(it) }
+
+          if (percentageMatch != null) {
+            if (!stopProcess){
+              withContext(Dispatchers.IO) {
+                val percent = (percentageMatch.groupValues[1]).toInt()
+                if (percent <= 100) {
+                  callBack(percent)
+                  delay(100)
+                }
+                if (percent == 100)stopProcess = true
+              }
+            }else break
+          } else continue
         }
         val exitCode = process.waitFor()
         return@withContext exitCode == 0
       }
     } catch (e: Exception) {
       e.printStackTrace()
-      false
+      return false
     }
-
   }
 
   fun isPackageInstalled(packageName: String): Boolean {

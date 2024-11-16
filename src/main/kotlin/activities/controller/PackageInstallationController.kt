@@ -25,12 +25,17 @@ class PackageInstallationController {
 
   private val ioScope = CoroutineScope(Dispatchers.IO)
 
+  private var _percent = MutableStateFlow(0)
+  val percent :StateFlow<Int> = _percent
+
 
   fun executeInstallation() {
     if (!commandExecutor.isPackageInstalled(currentPackageState.value.packageName)) {
       updateProgressBarVisiblility(true)
       ioScope.launch {
-        commandExecutor.installPackage(currentPackageState.value.packageName)
+        commandExecutor.installPackage(currentPackageState.value.packageName){ percent ->
+          _percent.value = percent
+        }
         updateProgressBarVisiblility(false)
         updateState(isInstalled = true)
       }
