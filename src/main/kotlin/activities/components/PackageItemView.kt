@@ -23,8 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
-import java.util.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -79,7 +80,7 @@ fun packageItemView(
     ) {
       Column(modifier = Modifier.weight(1f)) {
         Text(
-          packageData.packageName.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() },
+          packageData.packageName.capitalize(Locale.current),
           color = Color.White
         )
         Column(modifier = Modifier.padding(start = 5.dp, end = 5.dp)) {
