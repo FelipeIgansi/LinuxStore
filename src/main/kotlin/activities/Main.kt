@@ -2,6 +2,7 @@ package activities
 
 import activities.components.*
 import activities.controller.MainController
+import activities.controller.PackageInstallationController
 import activities.theme.blackBackground
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
@@ -60,9 +61,10 @@ fun app(
     "shotwell",
     "blender",
     "krita",
-    "steam",
+    "steam-installer",
     "obs-studio"
   )
+
   LaunchedEffect(Unit) {
     popularApps.forEach { packageName ->
       val key = packageService.getPackageDetails(aptCommandExecutor, packageName)
@@ -137,12 +139,10 @@ fun app(
               ) {
                 packageList.forEach { (key, value) ->
                   item {
-                    verticalListProgramsItems(
-                      aptPackageModel = key,
-                      iconPath = value
-                      /*onDownloadClicked = {
-                        //TODO()
-                      }*/
+                    packageItemView(
+                      packageData = key,
+                      packageIconPath = value,
+                      packageController = PackageInstallationController()
                     )
                   }
                 }
@@ -158,7 +158,7 @@ fun app(
 fun main() = application {
   Window(
     onCloseRequest = ::exitApplication,
-    title = "UbuntuStore",
+    title = "Store",
     alwaysOnTop = false,
     state =
     WindowState(
