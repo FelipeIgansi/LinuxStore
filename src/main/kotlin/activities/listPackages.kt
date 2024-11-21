@@ -86,7 +86,7 @@ fun listPackages(
               packageItemView(
                 packageData = key,
                 packageIconPath = icon,
-                packageController = PackageInstallationController()
+                packageInstallationController = PackageInstallationController()
               )
             }
           }

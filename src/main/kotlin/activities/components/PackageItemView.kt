@@ -32,24 +32,25 @@ import androidx.compose.ui.unit.dp
 fun packageItemView(
   packageData: AptPackageModel,
   packageIconPath: String,
-  packageController: PackageInstallationController
+  packageInstallationController: PackageInstallationController
 ) {
   var isItemHovered by remember { mutableStateOf(false) }
   var isButtonHovered by remember { mutableStateOf(false) }
 
-  val isProgressBarVisible by packageController.isProgressBarVisible.collectAsState()
-  val isInstallButtonEnabled by packageController.isInstallButtonEnabled.collectAsState()
-  val installButtonIcon by packageController.installButtonIcon.collectAsState()
-  val percent by packageController.percent.collectAsState()
+  val isProgressBarVisible by packageInstallationController.isProgressBarVisible.collectAsState()
+  val iconButton by packageInstallationController.iconButton.collectAsState()
+  val percent by packageInstallationController.percent.collectAsState()
 
-  val buttonBorderColor = if (isButtonHovered && !isInstallButtonEnabled) primaryColor else Color.Gray
+  val buttonBorderColor = if (iconButton == "download.png") primaryColor else Color.Red
+  val buttonBackgroundColor = if (iconButton == "download.png") primaryColor else Color.Red
+  val buttonIconColor = Color.White
   val itemBorder = if (isItemHovered) lightPurple else Color.Transparent
   val cornerRadius = 10.dp
 
 
 
   LaunchedEffect(Unit) {
-    packageController.updateButtonState(packageData)
+    packageInstallationController.updateIconButton(packageData)
   }
 
   Row(
@@ -103,8 +104,8 @@ fun packageItemView(
       } else {
         OutlinedButton(
           onClick = {
-            packageController.updateCurrentPackageState(packageData)
-            packageController.executeInstallation()
+            packageInstallationController.updateCurrentPackageState(packageData)
+            packageInstallationController.executeInstallation()
           },
           shape = RoundedCornerShape(cornerRadius),
           border = BorderStroke(
@@ -112,18 +113,17 @@ fun packageItemView(
             color = buttonBorderColor
           ),
           colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Transparent,
+            backgroundColor = if (isButtonHovered) buttonBackgroundColor else Color.Transparent,
             disabledBackgroundColor = Color.Transparent,
             disabledContentColor = Color.White
           ),
           modifier = Modifier.size(50.dp)
             .onPointerEvent(PointerEventType.Enter) { isButtonHovered = true }
             .onPointerEvent(PointerEventType.Exit) { isButtonHovered = false },
-          enabled = !isInstallButtonEnabled
         ) {
           Icon(
-            painter = painterResource("icons/$installButtonIcon"), contentDescription = null,
-            tint = buttonBorderColor,
+            painter = painterResource("icons/$iconButton"), contentDescription = null,
+            tint = buttonIconColor,
             modifier = Modifier.size(30.dp)
           )
         }

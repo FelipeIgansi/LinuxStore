@@ -15,46 +15,41 @@ class PackageInstallationController {
   private var _isProgressBarVisible = MutableStateFlow(false)
   val isProgressBarVisible: StateFlow<Boolean> = _isProgressBarVisible
 
-  private var _isInstallButtonEnabled = MutableStateFlow(false)
-  val isInstallButtonEnabled: StateFlow<Boolean> = _isInstallButtonEnabled
-
-  private var _installButtonIcon = MutableStateFlow("download.png")
-  val installButtonIcon: StateFlow<String> = _installButtonIcon
+  private var _iconButton = MutableStateFlow("download.png")
+  val iconButton: StateFlow<String> = _iconButton
 
   private val commandExecutor = AptCommandExecutor()
 
   private val ioScope = CoroutineScope(Dispatchers.IO)
 
   private var _percent = MutableStateFlow(0)
-  val percent :StateFlow<Int> = _percent
+  val percent: StateFlow<Int> = _percent
 
 
   fun executeInstallation() {
     if (!commandExecutor.isPackageInstalled(currentPackageState.value.packageName)) {
       updateProgressBarVisiblility(true)
       ioScope.launch {
-        commandExecutor.installPackage(currentPackageState.value.packageName){ percent ->
+        commandExecutor.installPackage(currentPackageState.value.packageName) { percent ->
           _percent.value = percent
         }
         updateProgressBarVisiblility(false)
-        updateState(isInstalled = true)
+        updateIconButton(isInstalled = true)
       }
     } else {
-      updateState(isInstalled = false)
+      updateIconButton(isInstalled = false)
     }
   }
 
-  fun updateButtonState(aptPackageModel: AptPackageModel) {
-    _isInstallButtonEnabled.value = commandExecutor.isPackageInstalled(aptPackageModel.packageName)
-    _installButtonIcon.value = chooseTheIcon(_isInstallButtonEnabled.value)
+  fun updateIconButton(aptPackageModel: AptPackageModel) {
+    _iconButton.value = chooseTheIcon(commandExecutor.isPackageInstalled(aptPackageModel.packageName))
   }
 
-  private fun updateState(isInstalled: Boolean) {
-    _isInstallButtonEnabled.value = isInstalled
-    _installButtonIcon.value = chooseTheIcon(isInstalled)
+  private fun updateIconButton(isInstalled: Boolean) {
+    _iconButton.value = chooseTheIcon(isInstalled)
   }
 
-  private fun chooseTheIcon(condition:Boolean) = if (condition)"check.png" else "download.png"
+  private fun chooseTheIcon(isInstalled: Boolean) = if (isInstalled) "uninstall.svg" else "download.png"
 
   fun updateCurrentPackageState(value: AptPackageModel) {
     currentPackageState.value = value
