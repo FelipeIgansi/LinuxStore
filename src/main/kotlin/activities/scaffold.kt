@@ -20,7 +20,6 @@ import navigation.Routes
 @OptIn(ExperimentalMaterialApi::class)
 fun scaffold(
   mainController: MainController,
-  aptCommandExecutor: AptCommandExecutor,
   route: String,
   buttonList: List<String>
 ) {

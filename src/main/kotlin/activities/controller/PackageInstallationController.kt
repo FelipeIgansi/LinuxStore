@@ -1,7 +1,9 @@
 package activities.controller
 
-import activities.AptCommandExecutor
 import activities.AptPackageModel
+import activities.constants.Constants
+import activities.constants.IconName
+import activities.packageManager.AptCommandExecutor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,7 @@ class PackageInstallationController {
   private var _isProgressBarVisible = MutableStateFlow(false)
   val isProgressBarVisible: StateFlow<Boolean> = _isProgressBarVisible
 
-  private var _iconButton = MutableStateFlow("download.png")
+  private var _iconButton = MutableStateFlow(IconName.INSTALL)
   val iconButton: StateFlow<String> = _iconButton
 
   private val commandExecutor = AptCommandExecutor()
@@ -26,13 +28,21 @@ class PackageInstallationController {
   val percent: StateFlow<Int> = _percent
 
 
-  fun executeInstallation() {
+  fun packageIsInstalled(isInstalled: Boolean){
+    if (isInstalled) executeUninstallPackage()
+    else executeInstallPackage()
+  }
+
+
+  private fun executeInstallPackage() {
     if (!commandExecutor.isPackageInstalled(currentPackageState.value.packageName)) {
       updateProgressBarVisiblility(true)
       ioScope.launch {
-        commandExecutor.installPackage(currentPackageState.value.packageName) { percent ->
-          _percent.value = percent
-        }
+        commandExecutor.executeCommand(
+          packageName = currentPackageState.value.packageName,
+          callBack = { percent -> _percent.value = percent },
+          command = Constants.INSTALL
+        )
         updateProgressBarVisiblility(false)
         updateIconButton(isInstalled = true)
       }
@@ -41,15 +51,32 @@ class PackageInstallationController {
     }
   }
 
-  fun updateIconButton(aptPackageModel: AptPackageModel) {
-    _iconButton.value = chooseTheIcon(commandExecutor.isPackageInstalled(aptPackageModel.packageName))
+  private fun executeUninstallPackage() {
+    if (commandExecutor.isPackageInstalled(currentPackageState.value.packageName)) {
+      updateProgressBarVisiblility(true)
+      ioScope.launch {
+        commandExecutor.executeCommand(
+          packageName = currentPackageState.value.packageName,
+          callBack = { percent -> _percent.value = percent },
+          command = Constants.REMOVE
+        )
+        updateProgressBarVisiblility(false)
+        updateIconButton(isInstalled = false)
+      }
+    } else {
+      updateIconButton(isInstalled = true)
+    }
+  }
+
+  fun updateIconButton(packageData: AptPackageModel) {
+    _iconButton.value = chooseTheIcon(commandExecutor.isPackageInstalled(packageData.packageName))
   }
 
   private fun updateIconButton(isInstalled: Boolean) {
     _iconButton.value = chooseTheIcon(isInstalled)
   }
 
-  private fun chooseTheIcon(isInstalled: Boolean) = if (isInstalled) "uninstall.svg" else "download.png"
+  private fun chooseTheIcon(isInstalled: Boolean) = if (isInstalled) IconName.UNINSTALL else IconName.INSTALL
 
   fun updateCurrentPackageState(value: AptPackageModel) {
     currentPackageState.value = value

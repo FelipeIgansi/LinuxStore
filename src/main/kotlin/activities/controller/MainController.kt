@@ -1,8 +1,8 @@
 package activities.controller
 
-import activities.AptCommandExecutor
+import activities.packageManager.AptCommandExecutor
 import activities.AptPackageModel
-import activities.PackageService
+import activities.packageManager.PackageService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

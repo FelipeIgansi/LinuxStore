@@ -26,6 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
+import activities.constants.IconName
+import activities.packageManager.AptCommandExecutor
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -41,13 +43,13 @@ fun packageItemView(
   val iconButton by packageInstallationController.iconButton.collectAsState()
   val percent by packageInstallationController.percent.collectAsState()
 
-  val buttonBorderColor = if (iconButton == "download.png") primaryColor else Color.Red
-  val buttonBackgroundColor = if (iconButton == "download.png") primaryColor else Color.Red
+  val buttonBorderColor = if (iconButton == IconName.INSTALL) primaryColor else Color.Red
+  val buttonBackgroundColor = if (iconButton == IconName.INSTALL) primaryColor else Color.Red
   val buttonIconColor = Color.White
   val itemBorder = if (isItemHovered) lightPurple else Color.Transparent
   val cornerRadius = 10.dp
 
-
+  val commandExecutor = AptCommandExecutor()
 
   LaunchedEffect(Unit) {
     packageInstallationController.updateIconButton(packageData)
@@ -105,7 +107,7 @@ fun packageItemView(
         OutlinedButton(
           onClick = {
             packageInstallationController.updateCurrentPackageState(packageData)
-            packageInstallationController.executeInstallation()
+            packageInstallationController.packageIsInstalled(commandExecutor.isPackageInstalled(packageData.packageName))
           },
           shape = RoundedCornerShape(cornerRadius),
           border = BorderStroke(

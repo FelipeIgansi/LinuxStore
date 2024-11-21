@@ -1,6 +1,9 @@
 package activities
 
+import activities.constants.Constants
 import activities.controller.MainController
+import activities.packageManager.AptCommandExecutor
+import activities.packageManager.PackageService
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
@@ -35,10 +38,9 @@ fun main() = application {
       ),
   ) {
     scaffold(
-      buttonList = buttonMenuItems,
-      aptCommandExecutor = aptCommandExecutor,
       mainController = mainController,
       route = Routes.Home.route,
+      buttonList = buttonMenuItems,
     )
   }
 }
