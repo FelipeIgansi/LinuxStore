@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun searchBar(text: String, onValueChange: (String) -> Unit, onButtonClicked: () -> Unit) {
+fun searchBar(text: String, onValueChange: (String) -> Unit, /*onButtonClicked: () -> Unit*/) {
   OutlinedTextField(
     value = text,
     onValueChange = { onValueChange(it) },
@@ -32,7 +32,7 @@ fun searchBar(text: String, onValueChange: (String) -> Unit, onButtonClicked: ()
     modifier = Modifier.fillMaxWidth()
       .padding(start = 15.dp, end = 15.dp, top = 5.dp, bottom = 5.dp),
     trailingIcon = {
-      IconButton(onClick = { onButtonClicked() }) {
+      IconButton(onClick = { /*onButtonClicked()*/ }) {
         Icon(
           painterResource(resourcePath = "icons/search.png"),
           contentDescription = null,

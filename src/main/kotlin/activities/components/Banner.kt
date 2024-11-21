@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import activities.theme.primaryColor
 
-class Banner {
+object Banner {
   @Composable
   fun home() {
     Row(
