@@ -19,6 +19,8 @@ fun navigationRail(
   showSearchTextField: Boolean,
   onShowCategoriesOptionsChanged: (Boolean) -> Unit,
   onShowSearchTextFieldChanged: (Boolean) -> Unit,
+  onButtonClick: (String) -> Unit,
+  route: String
 ) {
 
   var selected by remember { mutableStateOf(0) }
@@ -29,6 +31,8 @@ fun navigationRail(
     painterResource(resourcePath = "icons/update.png"),
     painterResource(resourcePath = "icons/about.png"),
   )
+
+  var currRoute by remember { mutableStateOf(route) }
   NavigationRail(
     backgroundColor = blackBackground,
     modifier = Modifier.padding(top = 10.dp, bottom = 10.dp, start = 5.dp).clip(RoundedCornerShape(10.dp))
@@ -76,7 +80,11 @@ fun navigationRail(
             },
             label = { Text(item) },
             selected = selected == index,
-            onClick = { selected = index },
+            onClick = {
+              currRoute = item
+              selected = index
+              onButtonClick(currRoute)
+            },
             selectedContentColor = Color.White,
             unselectedContentColor = Color.LightGray,
             alwaysShowLabel = selected == index

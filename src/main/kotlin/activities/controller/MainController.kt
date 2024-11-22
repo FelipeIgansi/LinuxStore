@@ -1,14 +1,29 @@
 package activities.controller
 
+import activities.packageManager.AptCommandExecutor
 import activities.AptPackageModel
+import activities.packageManager.PackageService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 
-class MainController {
-  private var _packageList = MutableStateFlow(mapOf<AptPackageModel, String>())
-  val packageList: StateFlow<Map<AptPackageModel, String>> = _packageList
+class MainController(
+  private val packageService: PackageService,
+  private val aptCommandExecutor: AptCommandExecutor,
+) {
+  private var _packageList = MutableStateFlow(mutableMapOf<AptPackageModel, String>())
+  val packageList: StateFlow<MutableMap<AptPackageModel, String>> = _packageList
 
-  fun setPackageList(value: Map<AptPackageModel, String>) {
+  private fun setPackageList(value: MutableMap<AptPackageModel, String>) {
     _packageList.value = value
+  }
+
+  suspend fun buscaTodosOsPacotesAPT(packageName: String, packageMap: MutableMap<AptPackageModel, String>) {
+    withContext(Dispatchers.IO) {
+      val key = packageService.getPackageDetails(aptCommandExecutor, packageName)
+      packageMap[key] = "icons/$packageName.svg"
+      setPackageList(packageMap)
+    }
   }
 }

@@ -1,5 +1,7 @@
-package activities
+package activities.packageManager
 
+import activities.constants.Constants
+import activities.constants.ModelName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -21,7 +23,7 @@ class AptCommandExecutor {
     BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
       var line: String?
       while (reader.readLine().also { line = it } != null) {
-        if (line!!.startsWith(Constants.PACKAGE_MODEL)) {
+        if (line!!.startsWith(ModelName.PACKAGE_MODEL)) {
           output.add(line!!.split(": ").last().trim())
         }
       }
@@ -52,13 +54,14 @@ class AptCommandExecutor {
     return aptOutput
   }
 
-  suspend fun installPackage(
+  suspend fun executeCommand(
     packageName: String,
-    callBack: (Int) -> Unit
+    callBack: (Int) -> Unit,
+    command: String
   ): Boolean {
     return try {
       withContext(Dispatchers.IO) {
-        val processBuilder = ProcessBuilder("pkexec", "apt", "install", packageName, "-y")
+        val processBuilder = ProcessBuilder("pkexec", "apt", command, packageName, "-y")
         var stopProcess = false
         processBuilder.redirectErrorStream(true)
 
@@ -69,18 +72,18 @@ class AptCommandExecutor {
 
         while (reader.readLine().also { line = it } != null) {
           val percentageMatch = line?.let { Regex("""(\d+)%""").find(it) }
-
+          println(line)
           if (percentageMatch != null) {
-            if (!stopProcess){
+            if (!stopProcess) {
               withContext(Dispatchers.IO) {
                 val percent = (percentageMatch.groupValues[1]).toInt()
                 if (percent <= 100) {
                   callBack(percent)
                   delay(100)
                 }
-                if (percent == 100)stopProcess = true
+                if (percent == 100) stopProcess = true
               }
-            }else break
+            } else break
           } else continue
         }
         val exitCode = process.waitFor()

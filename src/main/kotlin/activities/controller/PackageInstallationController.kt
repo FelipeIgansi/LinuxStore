@@ -1,7 +1,9 @@
 package activities.controller
 
-import activities.AptCommandExecutor
 import activities.AptPackageModel
+import activities.constants.Constants
+import activities.constants.IconName
+import activities.packageManager.AptCommandExecutor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,46 +17,54 @@ class PackageInstallationController {
   private var _isProgressBarVisible = MutableStateFlow(false)
   val isProgressBarVisible: StateFlow<Boolean> = _isProgressBarVisible
 
-  private var _isInstallButtonEnabled = MutableStateFlow(false)
-  val isInstallButtonEnabled: StateFlow<Boolean> = _isInstallButtonEnabled
-
-  private var _installButtonIcon = MutableStateFlow("download.png")
-  val installButtonIcon: StateFlow<String> = _installButtonIcon
+  private var _iconButton = MutableStateFlow(IconName.INSTALL)
+  val iconButton: StateFlow<String> = _iconButton
 
   private val commandExecutor = AptCommandExecutor()
 
   private val ioScope = CoroutineScope(Dispatchers.IO)
 
   private var _percent = MutableStateFlow(0)
-  val percent :StateFlow<Int> = _percent
+  val percent: StateFlow<Int> = _percent
 
 
-  fun executeInstallation() {
-    if (!commandExecutor.isPackageInstalled(currentPackageState.value.packageName)) {
+  fun packageIsInstalled(isInstalled: Boolean) {
+    if (isInstalled) executeAction(Constants.REMOVE, false)
+    else executeAction(Constants.INSTALL, true)
+  }
+
+
+  private fun executeAction(command: String, updateIconToInstalled: Boolean) {
+
+    val isPackageInstalled = commandExecutor.isPackageInstalled(currentPackageState.value.packageName)
+
+    if (command == Constants.INSTALL && !isPackageInstalled ||
+        command == Constants.REMOVE && isPackageInstalled
+    ) {
       updateProgressBarVisiblility(true)
       ioScope.launch {
-        commandExecutor.installPackage(currentPackageState.value.packageName){ percent ->
-          _percent.value = percent
-        }
+        commandExecutor.executeCommand(
+          packageName = currentPackageState.value.packageName,
+          callBack = { percent -> _percent.value = percent },
+          command = command
+        )
         updateProgressBarVisiblility(false)
-        updateState(isInstalled = true)
+        updateIconButton(isInstalled = updateIconToInstalled)
       }
     } else {
-      updateState(isInstalled = false)
+      updateIconButton(isInstalled = !updateIconToInstalled)
     }
   }
 
-  fun updateButtonState(aptPackageModel: AptPackageModel) {
-    _isInstallButtonEnabled.value = commandExecutor.isPackageInstalled(aptPackageModel.packageName)
-    _installButtonIcon.value = chooseTheIcon(_isInstallButtonEnabled.value)
+  fun updateIconButton(packageData: AptPackageModel) {
+    _iconButton.value = chooseTheIcon(commandExecutor.isPackageInstalled(packageData.packageName))
   }
 
-  private fun updateState(isInstalled: Boolean) {
-    _isInstallButtonEnabled.value = isInstalled
-    _installButtonIcon.value = chooseTheIcon(isInstalled)
+  private fun updateIconButton(isInstalled: Boolean) {
+    _iconButton.value = chooseTheIcon(isInstalled)
   }
 
-  private fun chooseTheIcon(condition:Boolean) = if (condition)"check.png" else "download.png"
+  private fun chooseTheIcon(isInstalled: Boolean) = if (isInstalled) IconName.UNINSTALL else IconName.INSTALL
 
   fun updateCurrentPackageState(value: AptPackageModel) {
     currentPackageState.value = value
