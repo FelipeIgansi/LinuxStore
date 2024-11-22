@@ -28,43 +28,31 @@ class PackageInstallationController {
   val percent: StateFlow<Int> = _percent
 
 
-  fun packageIsInstalled(isInstalled: Boolean){
-    if (isInstalled) executeUninstallPackage()
-    else executeInstallPackage()
+  fun packageIsInstalled(isInstalled: Boolean) {
+    if (isInstalled) executeAction(Constants.REMOVE, false)
+    else executeAction(Constants.INSTALL, true)
   }
 
 
-  private fun executeInstallPackage() {
-    if (!commandExecutor.isPackageInstalled(currentPackageState.value.packageName)) {
+  private fun executeAction(command: String, updateIconToInstalled: Boolean) {
+
+    val isPackageInstalled = commandExecutor.isPackageInstalled(currentPackageState.value.packageName)
+
+    if (command == Constants.INSTALL && !isPackageInstalled ||
+        command == Constants.REMOVE && isPackageInstalled
+    ) {
       updateProgressBarVisiblility(true)
       ioScope.launch {
         commandExecutor.executeCommand(
           packageName = currentPackageState.value.packageName,
           callBack = { percent -> _percent.value = percent },
-          command = Constants.INSTALL
+          command = command
         )
         updateProgressBarVisiblility(false)
-        updateIconButton(isInstalled = true)
+        updateIconButton(isInstalled = updateIconToInstalled)
       }
     } else {
-      updateIconButton(isInstalled = false)
-    }
-  }
-
-  private fun executeUninstallPackage() {
-    if (commandExecutor.isPackageInstalled(currentPackageState.value.packageName)) {
-      updateProgressBarVisiblility(true)
-      ioScope.launch {
-        commandExecutor.executeCommand(
-          packageName = currentPackageState.value.packageName,
-          callBack = { percent -> _percent.value = percent },
-          command = Constants.REMOVE
-        )
-        updateProgressBarVisiblility(false)
-        updateIconButton(isInstalled = false)
-      }
-    } else {
-      updateIconButton(isInstalled = true)
+      updateIconButton(isInstalled = !updateIconToInstalled)
     }
   }
 

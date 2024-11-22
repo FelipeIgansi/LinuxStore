@@ -72,6 +72,7 @@ class AptCommandExecutor {
 
         while (reader.readLine().also { line = it } != null) {
           val percentageMatch = line?.let { Regex("""(\d+)%""").find(it) }
+          println(line)
           if (percentageMatch != null) {
             if (!stopProcess) {
               withContext(Dispatchers.IO) {
