@@ -1,12 +1,10 @@
-# Nova interface para linux store saindo do forno. 🔥🧑‍🍳
+# New interface for linux store coming out of the oven. 🔥🧑‍🍳
 
 ## This is a Linux package management app
 
-Busco criar algo novo e testar os limitas da nova implementação da Jetbrains de criação de interfaces desktop com o compose.
+I'm looking to create something new and test the limits of Jetbrains' new implementation of creating desktop interfaces with Compose.
 
-Sinta-se a vontade para explorar os arquivos e contribuir. Estou aceitando ideias de como ir melhorando ela. ;)
+Feel free to explore the files and contribute. I'm accepting ideas on how to improve it. ;)
 
-
-*Preview inicial de como está ficando*
-
+Initial preview of how it's coming along
 ![Screenshot](src/main/resources/screenshots/preview_inicial.png)
